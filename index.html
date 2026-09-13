@@ -2,200 +2,467 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noapte buna Ina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🩷 Ina - Scrisoarea ta de dragoste 🩷</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #1a0b2e 0%, #2e1046 50%, #4c1d95 100%);
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #0f0a15;
+            color: #fce7f3;
             overflow: hidden;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
-
-        .romantic-font {
-            font-family: 'Dancing Script', cursive;
+        .code-font {
+            font-family: 'Fira Code', monospace;
         }
-
-        /* Heart particle styling */
-        .heart-particle {
+        .pink-glow {
+            box-shadow: 0 0 35px rgba(244, 114, 182, 0.45);
+        }
+        .pink-glow-lg {
+            box-shadow: 0 0 70px rgba(236, 72, 153, 0.65);
+        }
+        @keyframes letterPop {
+            0% { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+            70% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-letter {
+            animation: letterPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.9; }
+            100% { transform: translateY(-10vh) scale(1.3); opacity: 0; }
+        }
+        .floating-heart {
             position: absolute;
-            width: 16px;
-            height: 16px;
-            background-color: #ec4899;
-            transform: rotate(-45deg);
-            opacity: 0;
-            pointer-events: none;
-            box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
-        }
-
-        .heart-particle::before,
-        .heart-particle::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            background-color: #ec4899;
-            border-radius: 50%;
-        }
-
-        .heart-particle::before {
-            top: -8px;
-            left: 0;
-        }
-
-        .heart-particle::after {
-            top: 0;
-            left: 8px;
-        }
-
-        /* Glow effect for the final message */
-        .glow-message {
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 0 20px rgba(244, 114, 182, 0.8), 0 0 40px rgba(236, 72, 153, 0.6), 0 0 60px rgba(219, 39, 119, 0.4);
-        }
-
-        .glow-message.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Floating background stars/dust */
-        @keyframes floatDust {
-            0% { transform: translateY(0) translateX(0); opacity: 0.2; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) translateX(20px); opacity: 0.2; }
-        }
-
-        .dust {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: floatDust linear infinite;
-        }
-
-        @keyframes gentlePulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(236, 72, 153, 0.5)); }
-            50% { transform: scale(1.03); filter: drop-shadow(0 0 25px rgba(244, 114, 182, 0.8)); }
-        }
-
-        .heart-pulsing {
-            animation: gentlePulse 4s ease-in-out infinite;
-        }
-
-        @keyframes textGlow {
-            0%, 100% { text-shadow: 0 0 20px rgba(244, 114, 182, 0.8), 0 0 40px rgba(236, 72, 153, 0.6); }
-            50% { text-shadow: 0 0 30px rgba(244, 114, 182, 1), 0 0 60px rgba(236, 72, 153, 0.8), 0 0 80px rgba(219, 39, 119, 0.6); }
-        }
-
-        .glow-message.visible {
-            opacity: 1;
-            transform: scale(1);
-            animation: textGlow 4s ease-in-out infinite;
+            animation: floatUp 6s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="relative">
+<body class="w-screen h-screen flex flex-col justify-between items-center relative select-none">
 
-    <div id="dust-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+    <div id="hearts-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0"></div>
 
-    <div class="relative w-full h-full flex items-center justify-center">
-        <!-- Container where hearts will animate -->
-        <div id="heart-container" class="absolute w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] flex items-center justify-center"></div>
+    <header class="w-full max-w-4xl mt-3 mx-4 z-20 flex justify-center">
+        <section class="window w-full bg-[#1b1226]/95 border border-pink-500/40 rounded-2xl shadow-2xl backdrop-blur-md overflow-hidden">
+            <header class="titlebar bg-[#261836] px-4 py-2.5 border-b border-pink-500/30 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
+                </div>
+                <span class="code-font text-pink-300 text-xs md:text-sm font-semibold tracking-wider">♥ romantic_archery_ina.html ♥</span>
+                <span id="score-display" class="code-font text-xs text-pink-400/80 bg-pink-950/50 px-2 py-0.5 rounded-md">Încercări: 0</span>
+            </header>
+        </section>
+    </header>
 
-        <!-- Central Message -->
-        <div id="message-box" class="absolute text-center z-20 px-4">
-            <h1 class="glow-message romantic-font text-5xl sm:text-7xl md:text-8xl text-pink-200 font-bold tracking-wide">
-                Noapte bună, Ina
-            </h1>
-            <p class="glow-message romantic-font text-2xl sm:text-3xl text-pink-300 mt-2 font-light opacity-90 delay-300">
-                Visuri frumoase... ✨
+    <main class="w-full flex-1 relative flex items-center justify-center z-10 overflow-hidden max-w-5xl">
+        <canvas id="gameCanvas" class="w-full h-full cursor-crosshair touch-none"></canvas>
+
+        <div id="instruction-overlay" class="absolute top-4 left-1/2 -translate-x-1/2 bg-[#1b1226]/90 border border-pink-500/30 backdrop-blur-md px-5 py-2.5 rounded-full text-center shadow-lg transition-opacity duration-500 pointer-events-none">
+            <p class="text-pink-200 text-xs md:text-sm font-semibold tracking-wide flex items-center gap-2">
+                <span>🏹</span> Trage cu arcul în scrisoarea de dragoste! (Atinge și trage înapoi)
             </p>
+        </div>
+    </main>
+
+    <div id="letter-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-gradient-to-b from-[#fff1f2] to-[#ffe4e6] text-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl pink-glow-lg animate-letter relative border-4 border-pink-300 text-center">
+            
+            <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-rose-500 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg border-2 border-white animate-bounce">
+                💌
+            </div>
+
+            <div class="mt-4">
+                <h2 class="text-2xl md:text-3xl font-bold text-rose-600 mb-3 font-['Quicksand'] drop-shadow-sm">
+                    🩷🩷 Ina 🩷🩷
+                </h2>
+                <div class="w-20 h-1 bg-rose-300 mx-auto rounded-full mb-5"></div>
+                <p class="text-slate-700 text-sm md:text-base font-medium leading-relaxed mb-6 italic px-2">
+                    "Heyyy am vrut sa iti spun ca esti foatre draguta si simpatica 🩷 si sper ca acesta scrisoare sa te faca sa zambesti asa cum tu ma faci pe mine sa zambesc mereu"
+                </p>
+                <p class="text-rose-500 font-bold text-sm tracking-wider uppercase">
+                    Semnat de Gheorghe
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
-        const dustContainer = document.getElementById('dust-container');
-        for (let i = 0; i < 50; i++) {
-            const dust = document.createElement('div');
-            dust.classList.add('dust');
-            const size = Math.random() * 3 + 1;
-            dust.style.width = `${size}px`;
-            dust.style.height = `${size}px`;
-            dust.style.left = `${Math.random() * 100}vw`;
-            dust.style.top = `${Math.random() * 100}vh`;
-            dust.style.animationDuration = `${Math.random() * 6 + 4}s`;
-            dust.style.animationDelay = `${Math.random() * 5}s`;
-            dustContainer.appendChild(dust);
-        }
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const letterModal = document.getElementById('letter-modal');
+        const scoreDisplay = document.getElementById('score-display');
+        const instructionOverlay = document.getElementById('instruction-overlay');
 
-        // Mathematical heart shape generator function (parametric equation)
-        function getHeartCoordinates(t, scale = 15) {
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let attempts = 0;
+        let isAiming = false;
+        let bowPosition = { x: 120, y: canvas.height / 2 };
+        let pullPoint = { x: 120, y: canvas.height / 2 };
+        let arrowInFlight = null;
+        let letterOpened = false;
+        let particles = [];
+
+        const letterTarget = {
+            x: canvas.width - 150,
+            y: canvas.height / 2,
+            width: 110,
+            height: 80,
+            pulseTimer: 0
+        };
+
+        // Load cat-smile.gif stamp image
+        const catStampImg = new Image();
+        catStampImg.src = 'cat-smile.gif';
+        let stampLoaded = false;
+        catStampImg.onload = () => { stampLoaded = true; };
+        // Fallback placeholder if image cannot be loaded
+        catStampImg.onerror = () => { stampLoaded = false; };
+
+        function updatePositions() {
+            letterTarget.x = Math.max(canvas.width - 160, canvas.width * 0.72);
+            bowPosition.x = Math.min(110, canvas.width * 0.12);
+            if (!arrowInFlight && !isAiming) {
+                bowPosition.y = canvas.height / 2;
+                pullPoint = { ...bowPosition };
+            }
+        }
+        window.addEventListener('resize', updatePositions);
+        updatePositions();
+
+        const heartsContainer = document.getElementById('hearts-container');
+        function createBackgroundHearts() {
+            for (let i = 0; i < 14; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart text-pink-500/20 text-lg md:text-2xl';
+                heart.innerHTML = ['🩷', '💖', '✨', '💘'][Math.floor(Math.random() * 4)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (5 + Math.random() * 5) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+        createBackgroundHearts();
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             return {
-                x: x * scale,
-                y: y * scale
+                x: clientX - rect.left,
+                y: clientY - rect.top
             };
         }
 
-        const heartContainer = document.getElementById('heart-container');
-        const totalHearts = 90; // Increased particle count for a denser, smoother shape
-        const hearts = [];
+        // Pointer event listeners for robust touch and desktop support
+        canvas.addEventListener('pointerdown', startAim);
+        canvas.addEventListener('pointermove', dragBow);
+        window.addEventListener('pointerup', releaseBow);
+        window.addEventListener('pointercancel', releaseBow);
 
-        // Generate heart particle elements with slight variations for organic feel
-        for (let i = 0; i < totalHearts; i++) {
-            const heart = document.createElement('div');
-            heart.classList.add('heart-particle');
-            
-            const t = (i / totalHearts) * 2 * Math.PI;
-            const scaleFactor = window.innerWidth < 640 ? 11 : 14;
-            const targetPos = getHeartCoordinates(t, scaleFactor);
-            
-            heartContainer.appendChild(heart);
-            hearts.push({
-                element: heart,
-                targetX: targetPos.x,
-                targetY: targetPos.y
-            });
+        function startAim(e) {
+            if (letterOpened || arrowInFlight) return;
+            const pos = getPos(e);
+            const dist = Math.hypot(pos.x - bowPosition.x, pos.y - bowPosition.y);
+            if (dist < 140 || pos.x < canvas.width * 0.45) {
+                isAiming = true;
+                pullPoint = pos;
+                instructionOverlay.style.opacity = '0';
+            }
         }
 
-        // Trigger longer, smoother animation after initial load
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                hearts.forEach((item, index) => {
-                    // Slower staggered timing for a graceful, flowing outward movement
-                    setTimeout(() => {
-                        const el = item.element;
-                        // Start small and at the center
-                        el.style.transform = `translate(0px, 0px) scale(0.1) rotate(-45deg)`;
-                        el.style.opacity = '0';
+        function dragBow(e) {
+            if (!isAiming || letterOpened || arrowInFlight) return;
+            const pos = getPos(e);
+            const maxPull = 150;
+            const dx = pos.x - bowPosition.x;
+            const dy = pos.y - bowPosition.y;
+            const dist = Math.hypot(dx, dy);
 
-                        // Much slower, graceful cubic-bezier transition (3.5 seconds per particle path)
-                        el.style.transition = 'all 3.5s cubic-bezier(0.16, 1, 0.3, 1)';
-                        el.style.transform = `translate(${item.targetX}px, ${item.targetY}px) scale(1) rotate(-45deg)`;
-                        el.style.opacity = '1';
-                    }, index * 35); // Stagger interval lengthened for a slow, poetic unfurling
+            if (dist > maxPull) {
+                pullPoint.x = bowPosition.x + (dx / dist) * maxPull;
+                pullPoint.y = bowPosition.y + (dy / dist) * maxPull;
+            } else {
+                pullPoint = pos;
+            }
+        }
+
+        function releaseBow() {
+            if (!isAiming || letterOpened || arrowInFlight) return;
+            isAiming = false;
+
+            const dx = bowPosition.x - pullPoint.x;
+            const dy = bowPosition.y - pullPoint.y;
+            const pullDist = Math.hypot(dx, dy);
+
+            if (pullDist > 20) {
+                attempts++;
+                scoreDisplay.textContent = `Încercări: ${attempts}`;
+                
+                const speed = pullDist * 0.18;
+                const angle = Math.atan2(dy, dx);
+
+                arrowInFlight = {
+                    x: bowPosition.x,
+                    y: bowPosition.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    angle: angle
+                };
+            } else {
+                pullPoint = { ...bowPosition };
+                instructionOverlay.style.opacity = '1';
+            }
+        }
+
+        function triggerHitParticles(x, y) {
+            for (let i = 0; i < 25; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 6;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    color: Math.random() > 0.5 ? '#f472b6' : '#fb7185',
+                    size: 8 + Math.random() * 10
                 });
+            }
+        }
 
-                // Once the heart fully forms, apply the pulsing animation wrapper and reveal the glowing message
-                setTimeout(() => {
-                    heartContainer.classList.add('heart-pulsing');
-                    const messages = document.querySelectorAll('.glow-message');
-                    messages.forEach(msg => msg.classList.add('visible'));
-                }, totalHearts * 35 + 2500);
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            }, 800);
-        });
+            // Render particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.02;
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                } else {
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.font = `${p.size}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('💖', p.x, p.y);
+                    ctx.restore();
+                }
+            }
+
+            // Render realistic love letter target envelope
+            letterTarget.pulseTimer += 0.04;
+            const floatOffset = Math.sin(letterTarget.pulseTimer) * 7;
+            const targetX = letterTarget.x;
+            const targetY = letterTarget.y + floatOffset;
+
+            ctx.save();
+            ctx.translate(targetX, targetY);
+
+            ctx.shadowColor = '#ec4899';
+            ctx.shadowBlur = 30;
+
+            // Envelope base paper
+            ctx.fillStyle = '#fff1f2';
+            ctx.strokeStyle = '#db2777';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(-55, -42, 110, 84, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            // Envelope flap folds
+            ctx.beginPath();
+            ctx.moveTo(-55, -42);
+            ctx.lineTo(0, 8);
+            ctx.lineTo(55, -42);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(-55, 42);
+            ctx.lineTo(-18, 0);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(55, 42);
+            ctx.lineTo(18, 0);
+            ctx.stroke();
+
+            // Stamp (cat-smile.gif or cute stamp border placeholder)
+            ctx.save();
+            ctx.translate(30, -22);
+            ctx.fillStyle = '#fbcfe8';
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 1.5;
+            ctx.fillRect(0, 0, 22, 26);
+            ctx.strokeRect(0, 0, 22, 26);
+
+            if (stampLoaded) {
+                ctx.drawImage(catStampImg, 2, 2, 18, 22);
+            } else {
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🐱', 11, 13);
+            }
+            ctx.restore();
+
+            // Wax seal heart in center
+            ctx.font = '28px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('💗', 0, 6);
+
+            ctx.restore();
+
+            // Update flying arrow
+            if (arrowInFlight) {
+                arrowInFlight.x += arrowInFlight.vx;
+                arrowInFlight.y += arrowInFlight.vy;
+                arrowInFlight.vy += 0.035; // smooth gravity arc
+                arrowInFlight.angle = Math.atan2(arrowInFlight.vy, arrowInFlight.vx);
+
+                ctx.save();
+                ctx.translate(arrowInFlight.x, arrowInFlight.y);
+                ctx.rotate(arrowInFlight.angle);
+
+                // Realistic wooden shaft
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 4.5;
+                ctx.beginPath();
+                ctx.moveTo(-45, 0);
+                ctx.lineTo(20, 0);
+                ctx.stroke();
+
+                // Metallic arrow head
+                ctx.fillStyle = '#fb7185';
+                ctx.beginPath();
+                ctx.moveTo(25, 0);
+                ctx.lineTo(10, -8);
+                ctx.lineTo(10, 8);
+                ctx.closePath();
+                ctx.fill();
+
+                // Fletching feathers
+                ctx.fillStyle = '#ec4899';
+                ctx.beginPath();
+                ctx.moveTo(-45, 0);
+                ctx.lineTo(-54, -8);
+                ctx.lineTo(-50, 0);
+                ctx.lineTo(-54, 8);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+
+                // Hit detection collision bounds
+                const hitBoxLeft = targetX - letterTarget.width / 2;
+                const hitBoxRight = targetX + letterTarget.width / 2;
+                const hitBoxTop = targetY - letterTarget.height / 2;
+                const hitBoxBottom = targetY + letterTarget.height / 2;
+
+                if (arrowInFlight.x >= hitBoxLeft && arrowInFlight.x <= hitBoxRight &&
+                    arrowInFlight.y >= hitBoxTop && arrowInFlight.y <= hitBoxBottom) {
+                    triggerHitParticles(targetX, targetY);
+                    arrowInFlight = null;
+                    letterOpened = true;
+                    setTimeout(() => {
+                        letterModal.classList.remove('hidden');
+                    }, 400);
+                }
+
+                if (arrowInFlight && (arrowInFlight.x > canvas.width + 60 || arrowInFlight.y > canvas.height + 60 || arrowInFlight.y < -60)) {
+                    arrowInFlight = null;
+                    pullPoint = { ...bowPosition };
+                    instructionOverlay.style.opacity = '1';
+                }
+            }
+
+            // Render highly realistic recurve bow and string
+            ctx.save();
+            const bowX = bowPosition.x;
+            const bowY = bowPosition.y;
+
+            if (isAiming) {
+                // Pulled bowstring with tension lines
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(bowX - 8, bowY - 85);
+                ctx.lineTo(pullPoint.x, pullPoint.y);
+                ctx.lineTo(bowX - 8, bowY + 85);
+                ctx.stroke();
+
+                // Nocked arrow ready on string during pull
+                const aimAngle = Math.atan2(bowY - pullPoint.y, bowX - pullPoint.x);
+                ctx.save();
+                ctx.translate(pullPoint.x, pullPoint.y);
+                ctx.rotate(aimAngle + Math.PI);
+
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 4.5;
+                ctx.beginPath();
+                ctx.moveTo(-45, 0);
+                ctx.lineTo(20, 0);
+                ctx.stroke();
+
+                ctx.fillStyle = '#fb7185';
+                ctx.beginPath();
+                ctx.moveTo(25, 0);
+                ctx.lineTo(10, -8);
+                ctx.lineTo(10, 8);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            } else {
+                // Relaxed bowstring curve
+                ctx.strokeStyle = '#db2777';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(bowX - 8, bowY - 85);
+                ctx.quadraticCurveTo(bowX - 30, bowY, bowX - 8, bowY + 85);
+                ctx.stroke();
+            }
+
+            // Realistic recurve wooden bow limb body with curved tips
+            ctx.strokeStyle = '#db2777';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(bowX - 14, bowY - 85);
+            ctx.quadraticCurveTo(bowX - 25, bowY - 40, bowX - 16, bowY);
+            ctx.quadraticCurveTo(bowX - 25, bowY + 40, bowX - 14, bowY + 85);
+            ctx.stroke();
+
+            // Ergonomic handle grip wrap
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.roundRect(bowX - 20, bowY - 16, 12, 32, 6);
+            ctx.fill();
+
+            ctx.restore();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        requestAnimationFrame(gameLoop);
     </script>
 </body>
 </html>
