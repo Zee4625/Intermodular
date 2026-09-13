@@ -3,125 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mașina și Scrisoarea Drăguță</title>
-    <!-- Tailwind CSS pentru un design rapid și curat -->
+    <title>Pentru Ina 💌</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animație pentru mașină: Pornește din afara ecranului în dreapta și iese în stânga */
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Caveat:wght@600&display=swap');
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* Mașina trece de la dreapta la stânga (8 secunde) */
         @keyframes driveCar {
             0% {
-                transform: translateX(110vw);
+                transform: translateX(120vw);
             }
             100% {
-                transform: translateX(-150vw);
+                transform: translateX(-160vw);
             }
         }
 
-        /* Animație pentru apariția și căderea plicului */
-        @keyframes dropEnvelope {
+        /* Animație cool pentru plic */
+        @keyframes jumpEnvelope {
             0% {
-                transform: translate(0, -50px) scale(0);
+                transform: translate(40vw, 20px) scale(0.2) rotate(-20deg);
                 opacity: 0;
             }
             40% {
-                transform: translate(0, 0) scale(1.1);
+                transform: translate(0, -40px) scale(1.1) rotate(10deg);
                 opacity: 1;
             }
-            50% {
-                transform: translate(0, -10px) scale(1);
+            70% {
+                transform: translate(0, 5px) scale(0.95) rotate(-5deg);
             }
             100% {
-                transform: translate(0, 0) scale(1);
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes floatEnvelope {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes openLetter {
+            0% {
+                transform: scale(0.6) translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
                 opacity: 1;
             }
         }
 
         .animate-car {
-            animation: driveCar 5s linear forwards;
-            animation-play-state: paused; /* Oprit până la apăsarea butonului */
+            animation: driveCar 8s linear forwards;
         }
 
         .animate-envelope {
-            animation: dropEnvelope 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: jumpEnvelope 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+                       floatEnvelope 3s ease-in-out infinite 1s;
             display: none;
+        }
+
+        .animate-modal {
+            animation: openLetter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Efect bandă adezivă pentru poze */
+        .tape::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.65);
+            border: 1px dashed rgba(0, 0, 0, 0.15);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 10;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-200 h-screen overflow-hidden flex flex-col justify-between select-none">
+<body class="bg-gradient-to-tr from-rose-100 via-pink-100 to-purple-200 min-h-screen h-[100dvh] overflow-hidden flex flex-col justify-center items-center select-none p-4">
 
-    <!-- Partea de Sus / Titlu -->
-    <div class="text-center pt-10">
-        <h1 class="text-3xl font-bold text-pink-600 drop-shadow">O călătorie magică... 💌</h1>
-        <p class="text-gray-600 mt-2">Apasă butonul de mai jos pentru a porni mașina!</p>
-        <button id="startBtn" class="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition active:scale-95 cursor-pointer">
-            Pornește Mașina 🚗
-        </button>
-    </div>
-
-    <!-- Zona de Joc / Ecranul de animație -->
-    <div class="relative w-full h-64 overflow-hidden my-auto border-y-4 border-dashed border-pink-300 bg-white/40 backdrop-blur-sm flex items-center">
+    <!-- Zona de Animație (Compatibilă cu PC și Mobil) -->
+    <div class="relative w-full max-w-4xl h-60 md:h-72 overflow-hidden border-y-2 border-dashed border-pink-300 bg-white/30 backdrop-blur-md flex items-center shadow-inner rounded-2xl">
         
-        <!-- Șoseaua / Linia de fundal -->
-        <div class="absolute w-full h-2 bg-gray-400 top-1/2 -translate-y-1/2 z-0"></div>
+        <!-- Șoseaua -->
+        <div class="absolute w-full h-3 bg-gray-300/60 top-1/2 -translate-y-1/2 z-0">
+            <div class="w-full h-full border-t-2 border-dashed border-white"></div>
+        </div>
 
         <!-- MAȘINA (GIF) -->
         <div id="carContainer" class="absolute z-20 animate-car top-1/2 -translate-y-1/2 right-0">
-            <!-- Asigură-te că imaginea car.gif este în același folder -->
-            <img id="carImage" src="car.gif" alt="Mașină" class="w-36 md:w-48 object-contain transform scale-x-[-1]">
+            <img id="carImage" src="car.gif" alt="Mașină" class="w-32 md:w-52 object-contain transform scale-x-[-1] drop-shadow-lg">
         </div>
 
-        <!-- SCRISOAREA / PLICUL (CUTE) -->
+        <!-- SCRISOAREA / PLICUL -->
         <div id="envelope" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 animate-envelope cursor-pointer">
-            <div class="bg-pink-200 border-2 border-pink-400 w-28 h-20 rounded-lg shadow-xl flex items-center justify-center relative transform hover:scale-110 transition duration-300">
-                <!-- Partea de sus a plicului (triunghiul) -->
-                <div class="absolute top-0 w-0 h-0 border-l-[56px] border-l-transparent border-r-[56px] border-r-transparent border-t-[40px] border-t-pink-300"></div>
-                <!-- O inimioară mică și drăguță pe plic -->
-                <span class="text-2xl z-10 animate-bounce">💖</span>
+            <div class="bg-gradient-to-br from-pink-200 to-pink-300 border-2 border-pink-400 w-32 h-22 md:w-36 md:h-26 rounded-2xl shadow-2xl flex items-center justify-center relative transform hover:scale-110 transition duration-300">
+                <!-- Partea de sus a plicului -->
+                <div class="absolute top-0 w-0 h-0 border-l-[64px] md:border-l-[72px] border-l-transparent border-r-[64px] md:border-r-[72px] border-r-transparent border-t-[44px] md:border-t-[50px] border-t-pink-400/80 rounded-t-xl"></div>
+                <!-- Inimioară -->
+                <span class="text-2xl md:text-3xl z-10 animate-pulse drop-shadow">💖</span>
             </div>
         </div>
-
     </div>
 
-    <!-- Partea de Jos / Footer -->
-    <div class="text-center pb-8 text-gray-500 text-sm">
-        Creat cu drag pentru tine ✨
+    <!-- Fereastra Modală (Scrisoarea deschisă, optimizată mobil) -->
+    <div id="letterModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-3">
+        
+        <!-- Foaia de scrisoare -->
+        <div class="bg-[#fff9f0] border-2 border-pink-200 w-full max-w-md p-5 md:p-8 rounded-3xl shadow-2xl relative text-center animate-modal max-h-[92vh] overflow-y-auto">
+            
+            <!-- Floricele decorative colțuri -->
+            <span class="absolute top-3 left-3 text-pink-400 text-xl md:text-2xl">🌸</span>
+            <span class="absolute top-3 right-3 text-pink-400 text-xl md:text-2xl">✨</span>
+            
+            <!-- Titlul Scrisorii -->
+            <h2 class="text-2xl md:text-3xl font-bold text-pink-600 mb-3 md:mb-5 mt-1 handwritten tracking-wide">Dragă Ina, 💌</h2>
+
+            <!-- Cele 3 GIF-uri puse mai random (sus/jos, suprapuse) -->
+            <div class="relative w-full h-36 md:h-44 my-2">
+                <!-- Poza 1: kitty-cat.gif (mai sus, rotită spre stânga) -->
+                <div class="absolute left-2 top-0 bg-white p-1.5 pb-2.5 rounded-lg shadow-md transform -rotate-8 tape transition hover:scale-105 hover:z-30">
+                    <img src="kitty-cat.gif" alt="Kitty Cat" class="w-16 h-16 md:w-20 md:h-20 object-cover rounded">
+                </div>
+
+                <!-- Poza 2: cat-tiktok.gif (mai jos, rotită spre dreapta) -->
+                <div class="absolute right-2 top-8 bg-white p-1.5 pb-2.5 rounded-lg shadow-md transform rotate-12 tape transition hover:scale-105 hover:z-30">
+                    <img src="cat-tiktok.gif" alt="Cat TikTok" class="w-16 h-16 md:w-20 md:h-20 object-cover rounded">
+                </div>
+
+                <!-- Poza 3: cat-smile.gif (în centru, poziționată ușor mai jos și peste celelalte) -->
+                <div class="absolute left-1/2 -translate-x-1/2 top-4 bg-white p-1.5 pb-2.5 rounded-lg shadow-md transform -rotate-3 tape transition hover:scale-105 hover:z-40">
+                    <img src="cat-smile.gif" alt="Cat Smile" class="w-16 h-16 md:w-20 md:h-20 object-cover rounded">
+                </div>
+            </div>
+
+            <!-- Mesajul înduioșător -->
+            <div class="mt-4 md:mt-6 mb-4 text-gray-700 text-base md:text-lg leading-relaxed px-2 handwritten">
+                <p class="text-lg md:text-xl">Heyy! Îți urez mult succes pentru mâine! Știu că vei lua 26 din 26, am mare încredere în tine! ✨💪</p>
+                <p class="mt-3 font-bold text-pink-500 text-xl md:text-2xl">Cu drag,<br>Gheorghe 🧸</p>
+            </div>
+
+            <!-- Buton închidere elegant -->
+            <button id="closeModal" class="bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-2 px-6 md:py-2.5 md:px-8 rounded-full shadow-lg transform transition active:scale-95 cursor-pointer text-sm md:text-base">
+                Închide ✨
+            </button>
+        </div>
     </div>
 
-    <!-- Scriptul JavaScript mutat la final pentru a asigura încărcarea corectă a elementelor -->
+    <!-- Scriptul JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const startBtn = document.getElementById('startBtn');
             const carContainer = document.getElementById('carContainer');
             const envelope = document.getElementById('envelope');
+            const letterModal = document.getElementById('letterModal');
+            const closeModal = document.getElementById('closeModal');
 
-            startBtn.addEventListener('click', () => {
-                // Ascundem butonul în timpul animației
-                startBtn.classList.add('opacity-50', 'pointer-events-none');
-                
-                // Resetăm stările în caz că se apasă de mai multe ori
-                carContainer.style.animationPlayState = 'paused';
-                carContainer.style.animation = 'none';
-                envelope.style.display = 'none';
-                void carContainer.offsetWidth; // Trigger reflow
-
-                // Pornim animația mașinii
-                carContainer.style.animation = 'driveCar 4s linear forwards';
+            // Pornirea automată a animației imediat ce se încarcă pagina
+            setTimeout(() => {
                 carContainer.style.animationPlayState = 'running';
+            }, 500);
 
-                // Când mașina ajunge la mijloc (la 2 secunde), apare plicul
-                setTimeout(() => {
-                    envelope.style.display = 'block';
-                }, 2000);
+            // Când mașina ajunge la mijloc (la 4 secunde), plicul sare din ea
+            setTimeout(() => {
+                envelope.style.display = 'block';
+            }, 4000);
 
-                // După ce se termină animația, reactivăm butonul
-                setTimeout(() => {
-                    startBtn.classList.remove('opacity-50', 'pointer-events-none');
-                }, 4000);
+            // Când utilizatorul dă click sau tap pe plic, se deschide scrisoarea
+            envelope.addEventListener('click', () => {
+                letterModal.classList.remove('hidden');
             });
 
-            // Evenimentul de click pe plic
-            envelope.addEventListener('click', () => {
-                alert('Aici va fi scrisoarea ta drăguță! 💌✨');
+            // Închiderea scrisorii
+            closeModal.addEventListener('click', () => {
+                letterModal.classList.add('hidden');
             });
         });
     </script>
