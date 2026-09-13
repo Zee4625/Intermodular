@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🩷 Ina - Scrisoarea ta de dragoste 🩷</title>
+    <title>🩷 Ina - Mesaj Special 🩷</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -67,28 +67,44 @@
 
         <div id="instruction-overlay" class="absolute top-4 left-1/2 -translate-x-1/2 bg-[#1b1226]/90 border border-pink-500/30 backdrop-blur-md px-5 py-2.5 rounded-full text-center shadow-lg transition-opacity duration-500 pointer-events-none">
             <p class="text-pink-200 text-xs md:text-sm font-semibold tracking-wide flex items-center gap-2">
-                <span>🏹</span> Trage cu arcul în scrisoarea de dragoste! (Atinge și trage înapoi)
+                <span>🏹</span> Trage cu arcul în plic! (Atinge și trage înapoi)
             </p>
         </div>
     </main>
 
     <div id="letter-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-gradient-to-b from-[#fff1f2] to-[#ffe4e6] text-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl pink-glow-lg animate-letter relative border-4 border-pink-300 text-center">
+        <div class="bg-gradient-to-b from-[#fff1f2] to-[#ffe4e6] text-slate-800 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl pink-glow-lg animate-letter relative border-4 border-pink-300">
             
             <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-rose-500 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg border-2 border-white animate-bounce">
                 💌
             </div>
 
-            <div class="mt-4">
-                <h2 class="text-2xl md:text-3xl font-bold text-rose-600 mb-3 font-['Quicksand'] drop-shadow-sm">
+            <div class="mt-4 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-rose-600 mb-2 font-['Quicksand'] drop-shadow-sm">
                     🩷🩷 Ina 🩷🩷
                 </h2>
-                <div class="w-20 h-1 bg-rose-300 mx-auto rounded-full mb-5"></div>
-                <p class="text-slate-700 text-sm md:text-base font-medium leading-relaxed mb-6 italic px-2">
-                    "Heyyy am vrut sa iti spun ca esti foatre draguta si simpatica 🩷 si sper ca acesta scrisoare sa te faca sa zambesti asa cum tu ma faci pe mine sa zambesc mereu"
-                </p>
+                <div class="w-20 h-1 bg-rose-300 mx-auto rounded-full mb-6"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+                <!-- Left side: Corrected grammar text -->
+                <div class="flex-1 text-left">
+                    <p class="text-slate-700 text-sm md:text-base font-medium leading-relaxed italic">
+                        "Heyyy, am vrut să îți spun că ești foarte drăguță și simpatică 🩷 și sper ca această scrisoare să te facă să zâmbești așa cum tu mă faci pe mine să zâmbesc mereu"
+                    </p>
+                </div>
+
+                <!-- Right side: cat-smile.gif photo with nothing written underneath -->
+                <div class="flex flex-col items-center justify-center shrink-0">
+                    <div class="w-28 h-32 md:w-32 md:h-36 bg-white p-2 rounded-xl shadow-md border-2 border-pink-200 rotate-2 hover:rotate-0 transition-transform duration-300 flex items-center justify-center overflow-hidden">
+                        <img src="cat-smile.gif" alt="Cat Smile" class="w-full h-full object-cover rounded-lg" onerror="this.src='https://placehold.co/120x140/fbcfe8/f43f5e?text=🐱';">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center border-t border-pink-200/60 pt-4">
                 <p class="text-rose-500 font-bold text-sm tracking-wider uppercase">
-                    Semnat de Gheorghe
+                    Semnat: Gheorghe
                 </p>
             </div>
         </div>
@@ -124,16 +140,14 @@
             pulseTimer: 0
         };
 
-        // Load cat-smile.gif stamp image
         const catStampImg = new Image();
         catStampImg.src = 'cat-smile.gif';
         let stampLoaded = false;
         catStampImg.onload = () => { stampLoaded = true; };
-        // Fallback placeholder if image cannot be loaded
         catStampImg.onerror = () => { stampLoaded = false; };
 
         function updatePositions() {
-            letterTarget.x = Math.max(canvas.width - 160, canvas.width * 0.72);
+            letterTarget.x = Math.max(160, canvas.width * 0.75);
             bowPosition.x = Math.min(110, canvas.width * 0.12);
             if (!arrowInFlight && !isAiming) {
                 bowPosition.y = canvas.height / 2;
@@ -167,7 +181,6 @@
             };
         }
 
-        // Pointer event listeners for robust touch and desktop support
         canvas.addEventListener('pointerdown', startAim);
         canvas.addEventListener('pointermove', dragBow);
         window.addEventListener('pointerup', releaseBow);
@@ -266,7 +279,7 @@
                 }
             }
 
-            // Render realistic love letter target envelope
+            // Render floating envelope target
             letterTarget.pulseTimer += 0.04;
             const floatOffset = Math.sin(letterTarget.pulseTimer) * 7;
             const targetX = letterTarget.x;
@@ -278,7 +291,6 @@
             ctx.shadowColor = '#ec4899';
             ctx.shadowBlur = 30;
 
-            // Envelope base paper
             ctx.fillStyle = '#fff1f2';
             ctx.strokeStyle = '#db2777';
             ctx.lineWidth = 3;
@@ -287,7 +299,6 @@
             ctx.fill();
             ctx.stroke();
 
-            // Envelope flap folds
             ctx.beginPath();
             ctx.moveTo(-55, -42);
             ctx.lineTo(0, 8);
@@ -304,7 +315,7 @@
             ctx.lineTo(18, 0);
             ctx.stroke();
 
-            // Stamp (cat-smile.gif or cute stamp border placeholder)
+            // Stamp stamp
             ctx.save();
             ctx.translate(30, -22);
             ctx.fillStyle = '#fbcfe8';
@@ -323,7 +334,6 @@
             }
             ctx.restore();
 
-            // Wax seal heart in center
             ctx.font = '28px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -335,14 +345,13 @@
             if (arrowInFlight) {
                 arrowInFlight.x += arrowInFlight.vx;
                 arrowInFlight.y += arrowInFlight.vy;
-                arrowInFlight.vy += 0.035; // smooth gravity arc
+                arrowInFlight.vy += 0.035;
                 arrowInFlight.angle = Math.atan2(arrowInFlight.vy, arrowInFlight.vx);
 
                 ctx.save();
                 ctx.translate(arrowInFlight.x, arrowInFlight.y);
                 ctx.rotate(arrowInFlight.angle);
 
-                // Realistic wooden shaft
                 ctx.strokeStyle = '#f472b6';
                 ctx.lineWidth = 4.5;
                 ctx.beginPath();
@@ -350,7 +359,6 @@
                 ctx.lineTo(20, 0);
                 ctx.stroke();
 
-                // Metallic arrow head
                 ctx.fillStyle = '#fb7185';
                 ctx.beginPath();
                 ctx.moveTo(25, 0);
@@ -359,7 +367,6 @@
                 ctx.closePath();
                 ctx.fill();
 
-                // Fletching feathers
                 ctx.fillStyle = '#ec4899';
                 ctx.beginPath();
                 ctx.moveTo(-45, 0);
@@ -371,7 +378,6 @@
 
                 ctx.restore();
 
-                // Hit detection collision bounds
                 const hitBoxLeft = targetX - letterTarget.width / 2;
                 const hitBoxRight = targetX + letterTarget.width / 2;
                 const hitBoxTop = targetY - letterTarget.height / 2;
@@ -394,13 +400,12 @@
                 }
             }
 
-            // Render highly realistic recurve bow and string
+            // Render bow and arrow
             ctx.save();
             const bowX = bowPosition.x;
             const bowY = bowPosition.y;
 
             if (isAiming) {
-                // Pulled bowstring with tension lines
                 ctx.strokeStyle = '#f472b6';
                 ctx.lineWidth = 3;
                 ctx.beginPath();
@@ -409,7 +414,6 @@
                 ctx.lineTo(bowX - 8, bowY + 85);
                 ctx.stroke();
 
-                // Nocked arrow ready on string during pull
                 const aimAngle = Math.atan2(bowY - pullPoint.y, bowX - pullPoint.x);
                 ctx.save();
                 ctx.translate(pullPoint.x, pullPoint.y);
@@ -432,7 +436,6 @@
 
                 ctx.restore();
             } else {
-                // Relaxed bowstring curve
                 ctx.strokeStyle = '#db2777';
                 ctx.lineWidth = 3;
                 ctx.beginPath();
@@ -441,7 +444,6 @@
                 ctx.stroke();
             }
 
-            // Realistic recurve wooden bow limb body with curved tips
             ctx.strokeStyle = '#db2777';
             ctx.lineWidth = 8;
             ctx.lineCap = 'round';
@@ -451,7 +453,6 @@
             ctx.quadraticCurveTo(bowX - 25, bowY + 40, bowX - 14, bowY + 85);
             ctx.stroke();
 
-            // Ergonomic handle grip wrap
             ctx.fillStyle = '#f472b6';
             ctx.beginPath();
             ctx.roundRect(bowX - 20, bowY - 16, 12, 32, 6);
